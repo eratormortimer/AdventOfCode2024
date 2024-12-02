@@ -5,7 +5,7 @@ fn main() {
     match parse_input::read_input() {
         Some((first_parts, second_parts)) => {
             // Print the vectors if Some is returned
-            match get_distance(first_parts,second_parts) {
+            match get_similarity_score(first_parts,second_parts) {
                 Some(result) => {
                     println!("The result: {:?}.",result);
                 }
@@ -64,9 +64,6 @@ fn get_similarity_score(list_1:Vec<String>, list_2:Vec<String>) -> Option<i32> {
     for element_1 in list_1 {
         similarities.push(element_1 * occurrences.get(&element_1).unwrap_or(&0));
     }
-    let mut rtn = 0;
-    for element in similarities.iter() {
-        rtn = rtn + element;
-    }
+    let rtn: i32 = similarities.iter().sum();
     Some(rtn)
 }
