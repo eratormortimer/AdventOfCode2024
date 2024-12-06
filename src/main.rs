@@ -1,6 +1,7 @@
 mod parse_input;
 mod day_1;
 mod day_2;
+mod day_3;
 
 fn main() {
     match parse_input::read_input("1") {
@@ -31,6 +32,37 @@ fn main() {
                 }
             }
             
+        }
+        _ => {
+            println!("result busted");
+        }
+    }
+    match parse_input::read_input("3") {
+        Some(parse_input::Data::Muls(list)) => {
+            match day_3::calc_muts(list.clone()) {
+                Some(result) => {
+                    println!("The result: {:?}.",result);
+                }
+                None => {
+                    println!("result busted");
+                }
+            }
+        }
+        _ => {
+            println!("result busted");
+        }
+    }
+    match parse_input::read_input("4") {
+        Some(parse_input::Data::Nested(list)) => {
+            println!("The result: {:?}.",list);
+            match day_4::get_xmas(list.clone()) {
+                Some(result) => {
+                    println!("The result: {:?}.",result);
+                }
+                None => {
+                    println!("result busted");
+                }
+            }
         }
         _ => {
             println!("result busted");
