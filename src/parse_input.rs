@@ -6,6 +6,7 @@ pub enum Data {
     Single((Vec<String>, Vec<String>)),
     Nested(Vec<Vec<String>>),
     Muls(Vec<(i32,i32)>),
+    CharArray(Vec<Vec<char>>)
 }
 
 pub fn read_input(day: &str) -> Option<Data> {
@@ -25,7 +26,7 @@ pub fn read_input(day: &str) -> Option<Data> {
                 return Some(Data::Muls(get_do_muls(&content)));
             }
             if day == "4" {
-                return Some(Data::Nested(read_into_list_of_lists(&content)));
+                return Some(Data::CharArray(read_into_char_array(&content)));
             }
             return None;
         }
@@ -55,6 +56,15 @@ fn read_into_list_of_lists(input: &str) -> Vec<Vec<String>> {
     let lines = input.lines();
     let rtn = lines.map(|line| line.split_whitespace().map(|word| word.to_string()).collect())
     .collect();
+    rtn
+}
+
+fn read_into_char_array(input: &str) -> Vec<Vec<char>> {
+    let lines = input.lines();
+    let mut rtn: Vec<Vec<char>> = Vec::new();
+    for line in lines {
+        rtn.push(line.chars().collect());
+    }
     rtn
 }
 

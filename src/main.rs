@@ -2,7 +2,7 @@ mod parse_input;
 mod day_1;
 mod day_2;
 mod day_3;
-
+mod day_4;
 fn main() {
     match parse_input::read_input("1") {
         Some(parse_input::Data::Single((first_parts, second_parts))) => {
@@ -53,7 +53,7 @@ fn main() {
         }
     }
     match parse_input::read_input("4") {
-        Some(parse_input::Data::Nested(list)) => {
+        Some(parse_input::Data::CharArray(list)) => {
             println!("The result: {:?}.",list);
             match day_4::get_xmas(list.clone()) {
                 Some(result) => {
