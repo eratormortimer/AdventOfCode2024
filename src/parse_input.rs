@@ -6,8 +6,11 @@ pub enum Data {
     Single((Vec<String>, Vec<String>)),
     Nested(Vec<Vec<String>>),
     Muls(Vec<(i32,i32)>),
-    CharArray(Vec<Vec<char>>)
+    CharArray(Vec<Vec<char>>),
+    Day5((Vec<(i32,i32)>,Vec<Vec<i32>>)),
+
 }
+
 
 pub fn read_input(day: &str) -> Option<Data> {
 
@@ -26,6 +29,12 @@ pub fn read_input(day: &str) -> Option<Data> {
                 return Some(Data::Muls(get_do_muls(&content)));
             }
             if day == "4" {
+                return Some(Data::CharArray(read_into_char_array(&content)));
+            }
+            if day == "5" {
+                return Some(Data::Day5(read_day_5(&content)));
+            }
+            if day == "6" {
                 return Some(Data::CharArray(read_into_char_array(&content)));
             }
             return None;
@@ -56,6 +65,14 @@ fn read_into_list_of_lists(input: &str) -> Vec<Vec<String>> {
     let lines = input.lines();
     let rtn = lines.map(|line| line.split_whitespace().map(|word| word.to_string()).collect())
     .collect();
+    rtn
+}
+fn read_into_list_of_lists_with_strings(input: &str) -> Vec<Vec<String>> {
+    let lines = input.lines();
+    let mut rtn: Vec<Vec<String>> = Vec::new();
+    for line in lines {
+        rtn.push(line.chars().map(|x| x.to_string()).collect());
+    }
     rtn
 }
 
@@ -91,9 +108,30 @@ fn get_do_muls(input: &str) -> Vec<(i32,i32)> {
     split.remove(0);
     for element in split {
         println!("{:?}",element);
-        println!("NEW LINE");
+        //println!("NEW LINE");
         let element_split: Vec<String> = element.split("do()").map(|s| s.to_string()).collect();
         lines.extend(element_split.iter().skip(1).cloned());
     }
     read_into_muls(lines)
-}       
+}
+
+fn read_day_5(input: &str) -> (Vec<(i32,i32)>,Vec<Vec<i32>>) {
+    let parts: Vec<&str> = input.split("\n\n").collect();
+    let mut orders: Vec<(i32,i32)> = Vec::new();
+    let mut lists: Vec<Vec<i32>> = Vec::new();
+    for line in parts[0].lines() {
+        let numbers: Result<Vec<i32>, _> = line.split('|').map(|x| x.parse()).collect();
+        if let Ok(vector) = numbers {
+            orders.push((vector[0] ,vector[1]));
+        }
+    }
+
+    for line in parts[1].lines() {
+        let list: Result<Vec<i32>, _> = line.split(',').map(|x| x.parse()).collect();
+        if let Ok(vector) = list {
+            lists.push(vector);
+        }
+    }
+
+    (orders,lists)
+}
