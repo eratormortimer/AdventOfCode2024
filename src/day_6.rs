@@ -2,10 +2,10 @@ use std::io;
 use std::collections::HashSet;
 use std::collections::HashMap;
 
-const UP: (i32, i32) = (0, -1);
-const DOWN: (i32, i32) = (0, 1);
-const LEFT: (i32, i32) = (-1, 0);
-const RIGHT: (i32, i32) = (1, 0);
+const UP: (i32, i32) = (-1, 0);
+const DOWN: (i32, i32) = (1, 0);
+const LEFT: (i32, i32) = (0, -1);
+const RIGHT: (i32, i32) = (0, 1);
 const UP_SYMBOL: char = '^';
 const DOWN_SYMBOL: char = 'v';
 const LEFT_SYMBOL: char = '<';
@@ -53,29 +53,45 @@ impl Maze {
             return None;
         }
         //we move here
-        if self.maze[target.0 as usize][target.1 as usize] == '.' {
-            self.guard_position = target;
-            return Some(target);
-        } else {
-            match self.guard_direction {
-                UP => {
-                    self.guard_direction = RIGHT;
-                }
-                RIGHT => {
-                    self.guard_direction = DOWN;
-                }
-                DOWN => {
-                    self.guard_direction = LEFT;
-                }
-                LEFT => {
-                    self.guard_direction = UP;
-                }
-                _ => {
-                    return None;
-                }
+        match self.maze[target.0 as usize][target.1 as usize] {
+            '.' | UP_SYMBOL | DOWN_SYMBOL | RIGHT_SYMBOL | LEFT_SYMBOL => {
+                self.guard_position = target;
+                return Some(target);
             }
-            return self.move_symbol();
+            _ => {
+                match self.guard_direction {
+                    UP => {
+                        self.guard_direction = RIGHT;
+                    }
+                    RIGHT => {
+                        self.guard_direction = DOWN;
+                    }
+                    DOWN => {
+                        self.guard_direction = LEFT;
+                    }
+                    LEFT => {
+                        self.guard_direction = UP;
+                    }
+                    _ => {
+                        return None;
+                    }
+                }
+                return self.move_symbol();
+            }
         }
+    }
+    fn detect_loop(&mut self) -> bool {
+        let mut all_positions: HashSet<((i32,i32),(i32,i32))> = HashSet::new();
+        let guard_start_pos = self.guard_position;
+        let guard_start_dir = self.guard_direction;
+        all_positions.insert((self.guard_position,self.guard_direction));
+        while let Some(tile) = self.move_symbol() {
+            //println!("guard_pos: {:?}\n guard_dir{:?}\n",self.guard_position,self.guard_direction);
+            if !all_positions.insert((tile,self.guard_direction)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 
@@ -87,11 +103,26 @@ fn wait_for_enter() {
 }
 
 pub fn solve_maze(maze_board: Vec<Vec<char>>) -> Option<i32> {
-    let mut rtn: HashSet<(i32,i32)> = HashSet::new();
-    let mut maze = Maze::new(maze_board.clone());
-    while let Some(tile) = maze.move_symbol() {
-        println!("guard position: {:?} and direction {:?}",maze.guard_position,maze.guard_direction);
-        rtn.insert(tile);
+    let mut rtn = 0;
+    return Some(0);
+    for (pos_x,list) in maze_board.iter().enumerate() {
+        for (pos_y,value) in list.iter().enumerate() {
+            match *value {
+                '#' | UP_SYMBOL | DOWN_SYMBOL | RIGHT_SYMBOL | LEFT_SYMBOL => {
+                    continue;
+                }
+                _ => {
+                    let mut maze_board_cpy=maze_board.clone();
+                    maze_board_cpy[pos_x][pos_y]='#';
+                    let mut maze = Maze::new(maze_board_cpy);
+                    if maze.detect_loop() {
+                        //println!("guard_pos: {:?}\n guard_dir{:?}\n new wall: {:?}",maze.guard_position,maze.guard_direction,(pos_x,pos_y));
+                        //wait_for_enter();
+                        rtn +=1;
+                    }
+                }
+            }
+        }
     }
-    Some(rtn.len().try_into().unwrap())
+    Some(rtn)
 }
