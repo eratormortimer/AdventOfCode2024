@@ -8,6 +8,7 @@ pub enum Data {
     Muls(Vec<(i32,i32)>),
     CharArray(Vec<Vec<char>>),
     Day5((Vec<(i32,i32)>,Vec<Vec<i32>>)),
+    Operators(Vec<(i64,Vec<i64>)>)
 
 }
 
@@ -36,6 +37,9 @@ pub fn read_input(day: &str) -> Option<Data> {
             }
             if day == "6" {
                 return Some(Data::CharArray(read_into_char_array(&content)));
+            }
+            if day == "7" {
+                return Some(Data::Operators(read_into_operators(&content)));
             }
             return None;
         }
@@ -134,4 +138,15 @@ fn read_day_5(input: &str) -> (Vec<(i32,i32)>,Vec<Vec<i32>>) {
     }
 
     (orders,lists)
+}
+
+fn read_into_operators(input: &str) -> Vec<(i64,Vec<i64>)> {
+    let lines = input.lines();
+    let mut rtn : Vec<(i64,Vec<i64>)> = Vec::new();
+    for line in lines {
+        if let Some((single_sum, summands)) = line.split_once(':') {
+            rtn.push((single_sum.parse().unwrap(),summands.split(' ').filter_map(|x| x.parse::<i64>().ok()).collect()));
+        }
+    }
+    rtn
 }
