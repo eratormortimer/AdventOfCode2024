@@ -41,16 +41,16 @@ pub fn read_input(day: &str) -> Option<Data> {
             if day == "7" {
                 return Some(Data::Operators(read_into_operators(&content)));
             }
+            if day == "8" {
+                return Some(Data::CharArray(read_into_char_array(&content)));
+            }
             return None;
         }
         Err(e) => {
             eprintln!("Error reading file {}: {}", file_path, e);
             None // Return an empty string on error
-        }
     }
-    
-    
-
+}
 }
 
 fn read_into_lists(input: &str) -> (Vec<String>,Vec<String>) {

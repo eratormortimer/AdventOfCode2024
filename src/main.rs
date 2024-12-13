@@ -6,6 +6,7 @@ mod day_4;
 mod day_5;
 mod day_6;
 mod day_7;
+mod day_8;
 
 fn main() {
     match parse_input::read_input("1") {
@@ -108,6 +109,22 @@ fn main() {
         Some(parse_input::Data::Operators(list)) => {
             //println!("The result: {:?}.",list);
             match day_7::calc_muts(list.clone()) {
+                Some(result) => {
+                    println!("The result: {:?}.",result);
+                }
+                None => {
+                    println!("result busted");
+                }
+            }
+        }
+         _ => {
+             println!("result busted");
+        }
+    }
+    match parse_input::read_input("8") {
+        Some(parse_input::Data::CharArray(list)) => {
+            //println!("The result: {:?}.",list);
+            match day_8::calc_antinode_amount(list.clone()) {
                 Some(result) => {
                     println!("The result: {:?}.",result);
                 }
