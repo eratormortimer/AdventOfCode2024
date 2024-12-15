@@ -7,6 +7,8 @@ mod day_5;
 mod day_6;
 mod day_7;
 mod day_8;
+mod day_9;
+mod day_10;
 
 fn main() {
     match parse_input::read_input("1") {
@@ -125,6 +127,38 @@ fn main() {
         Some(parse_input::Data::CharArray(list)) => {
             //println!("The result: {:?}.",list);
             match day_8::calc_antinode_amount(list.clone()) {
+                Some(result) => {
+                    println!("The result: {:?}.",result);
+                }
+                None => {
+                    println!("result busted");
+                }
+            }
+        }
+         _ => {
+             println!("result busted");
+        }
+    }
+    match parse_input::read_input("9") {
+        Some(parse_input::Data::Day9(list)) => {
+            //println!("The result: {:?}.",list);
+            match day_9::defragment_disk_in_files(list.clone()) {
+                Some(result) => {
+                    println!("The result: {:?}.",result);
+                }
+                None => {
+                    println!("result busted");
+                }
+            }
+        }
+         _ => {
+             println!("result busted");
+        }
+    }
+    match parse_input::read_input("10") {
+        Some(parse_input::Data::NestedInt(list)) => {
+            //println!("The result: {:?}.",list);
+            match day_10::trailhead_score(list.clone()) {
                 Some(result) => {
                     println!("The result: {:?}.",result);
                 }

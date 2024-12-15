@@ -14,7 +14,7 @@ pub fn calc_antinode_amount(field: Vec<Vec<char>>) -> Option<i64> {
     let dimensions = get_dimensions(&field);
     let antennas = get_antennas(&field);
     for (antenna,antenna_locations) in &antennas {
-        possible_antinodes.extend(get_antinode_for_antenna(antenna_locations, &dimensions));
+        possible_antinodes.extend(get_new_antinode_for_antenna(antenna_locations, &dimensions));
     }
     let mut unique_antinode: Vec<Vector2<i64>> = Vec::new();
     for antinode in possible_antinodes {
@@ -22,7 +22,7 @@ pub fn calc_antinode_amount(field: Vec<Vec<char>>) -> Option<i64> {
             unique_antinode.push(antinode);
         }
     }
-    println!("uniques: {:?}",unique_antinode);
+    //println!("uniques: {:?}",unique_antinode);
     return Some(unique_antinode.len() as i64);
     for antinode in unique_antinode {
         let mut reject = false; 
@@ -56,7 +56,32 @@ fn get_dimensions(field: &Vec<Vec<char>>) -> Vector2<i64> {
     let mut rtn = Vector2::new(field.len() as i64, field[0].len() as i64);
     rtn
 }
-
+fn get_new_antinode_for_antenna(antenna_locations: &Vec<Vector2<i64>>, dimensions: &Vector2<i64>) -> Vec<Vector2<i64>> {
+    let mut possible_antinodes: Vec<Vector2<i64>> = Vec::new();
+    let combinations = antenna_locations.iter().combinations(2);
+    for combination in combinations {
+        let (mut vec_a, mut vec_b) = (combination[0], combination[1]);
+        possible_antinodes.push(*vec_a);
+        possible_antinodes.push(*vec_b);
+        let diff = *vec_a - *vec_b;
+        let mut vec_a_copy = *vec_a;
+        while vec_a_copy.x < dimensions.x && vec_a_copy.y < dimensions.y && vec_a_copy.x >=0 && vec_a_copy.y >= 0 {
+            if !possible_antinodes.contains(&vec_a_copy){
+                possible_antinodes.push(vec_a_copy);
+            }
+            vec_a_copy = vec_a_copy + diff;
+        }
+        let mut vec_b_copy = *vec_b;
+        while vec_b_copy.x < dimensions.x && vec_b_copy.y < dimensions.y && vec_b_copy.x >=0 && vec_b_copy.y >= 0 {
+            if !possible_antinodes.contains(&vec_b_copy){
+                possible_antinodes.push(vec_b_copy);
+            }
+            vec_b_copy = vec_b_copy - diff;
+        }
+    
+    }
+    possible_antinodes
+}
 fn get_antinode_for_antenna(antenna_locations: &Vec<Vector2<i64>>, dimensions: &Vector2<i64>) -> Vec<Vector2<i64>> {
     let mut possible_antinodes: Vec<Vector2<i64>> = Vec::new();
     let combinations = antenna_locations.iter().combinations(2);

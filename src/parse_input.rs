@@ -8,8 +8,9 @@ pub enum Data {
     Muls(Vec<(i32,i32)>),
     CharArray(Vec<Vec<char>>),
     Day5((Vec<(i32,i32)>,Vec<Vec<i32>>)),
-    Operators(Vec<(i64,Vec<i64>)>)
-
+    Operators(Vec<(i64,Vec<i64>)>),
+    Day9(Vec<i64>),
+    NestedInt(Vec<Vec<i64>>),
 }
 
 
@@ -44,6 +45,12 @@ pub fn read_input(day: &str) -> Option<Data> {
             if day == "8" {
                 return Some(Data::CharArray(read_into_char_array(&content)));
             }
+            if day == "9" {
+                return Some(Data::Day9(read_into_disk_rep(&content)));
+            }
+            if day == "10" {
+                return Some(Data::NestedInt(read_into_list_of_lists_int(&content)));
+            }
             return None;
         }
         Err(e) => {
@@ -71,6 +78,19 @@ fn read_into_list_of_lists(input: &str) -> Vec<Vec<String>> {
     .collect();
     rtn
 }
+
+fn read_into_list_of_lists_int(input: &str) -> Vec<Vec<i64>> {
+    let lines = input.lines();
+    let mut rtn: Vec<Vec<i64>> = Vec::new();
+    for line in lines {
+        rtn.push(line.chars()
+        .map(|c| c.to_digit(10).unwrap() as i64)
+        .collect());
+    }
+    rtn
+}
+
+
 fn read_into_list_of_lists_with_strings(input: &str) -> Vec<Vec<String>> {
     let lines = input.lines();
     let mut rtn: Vec<Vec<String>> = Vec::new();
@@ -146,6 +166,29 @@ fn read_into_operators(input: &str) -> Vec<(i64,Vec<i64>)> {
     for line in lines {
         if let Some((single_sum, summands)) = line.split_once(':') {
             rtn.push((single_sum.parse().unwrap(),summands.split(' ').filter_map(|x| x.parse::<i64>().ok()).collect()));
+        }
+    }
+    rtn
+}
+
+fn read_into_disk_rep(input: &str) -> Vec<i64> {
+    let mut rtn: Vec<i64> = Vec::new();
+    let mut empty = false;
+    let mut id: i64 = 0;
+    for ch in input.chars() {
+        if let Some(digit) = ch.to_digit(10) {
+            if empty {
+                for i in 0..digit {
+                    rtn.push(-1);
+                }
+                empty = false;
+            } else {
+                for i in 0..digit {
+                    rtn.push(id);
+                }
+                id += 1;
+                empty = true;
+            }
         }
     }
     rtn
