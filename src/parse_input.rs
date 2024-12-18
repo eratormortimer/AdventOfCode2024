@@ -51,6 +51,9 @@ pub fn read_input(day: &str) -> Option<Data> {
             if day == "10" {
                 return Some(Data::NestedInt(read_into_list_of_lists_int(&content)));
             }
+            if day == "11" {
+                return Some(Data::Day9(read_into_int_list(&content)));
+            }
             return None;
         }
         Err(e) => {
@@ -190,6 +193,14 @@ fn read_into_disk_rep(input: &str) -> Vec<i64> {
                 empty = true;
             }
         }
+    }
+    rtn
+}
+
+fn read_into_int_list(input: &str) -> Vec<i64> {
+    let mut rtn: Vec<i64> = Vec::new();
+    for i in input.split(' ') {
+        rtn.push(i.parse::<i64>().expect("Failed to parse string as i64"));
     }
     rtn
 }

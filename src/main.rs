@@ -9,6 +9,7 @@ mod day_7;
 mod day_8;
 mod day_9;
 mod day_10;
+mod day_11;
 
 fn main() {
     match parse_input::read_input("1") {
@@ -158,7 +159,23 @@ fn main() {
     match parse_input::read_input("10") {
         Some(parse_input::Data::NestedInt(list)) => {
             //println!("The result: {:?}.",list);
-            match day_10::trailhead_score(list.clone()) {
+            match day_10::trailhead_score_part2(list.clone()) {
+                Some(result) => {
+                    println!("The result: {:?}.",result);
+                }
+                None => {
+                    println!("result busted");
+                }
+            }
+        }
+         _ => {
+             println!("result busted");
+        }
+    }
+    match parse_input::read_input("11") {
+        Some(parse_input::Data::Day9(list)) => {
+            //println!("The result: {:?}.",list);
+            match day_11::how_many_stones(&mut list.clone()) {
                 Some(result) => {
                     println!("The result: {:?}.",result);
                 }
